@@ -1,77 +1,131 @@
 # Titanic Machine Learning Project
 
-This repository contains my explorations of machine learning models on the **Titanic dataset**. The goal is to predict passenger survival using structured feature engineering, pipelines, and model evaluation. The project is ongoing — I plan to add more models, hyperparameter tuning, and performance analysis over time.  
+This repository contains a complete, end-to-end machine learning solution for predicting passenger survival on the Titanic dataset.  
+The project emphasizes **clean pipelines, feature engineering, robust evaluation, and model interpretability**, following industry-aligned best practices.
+
+The project is now **complete**, covering the full lifecycle from baseline modeling to advanced explainability.
 
 ---
 
-## Current Implementations
-
-### 1. Logistic Regression Pipeline
-- **Preprocessing:**  
-  - Impute missing numerical values with median  
-  - Standardize numerical features (`Age`, `Fare`, `SibSp`, `Parch`, `FamilySize`, `IsAlone`)  
-  - Impute missing categorical values with most frequent  
-  - One-Hot Encode categorical features (`Sex`, `Embarked`, `Pclass`)  
-
-- **Feature Engineering:**  
-  - `FamilySize` = `SibSp` + `Parch` + 1  
-  - `IsAlone` = 1 if passenger is alone, else 0  
-
-- **Model:** Logistic Regression (`max_iter=1000`)  
-
-- **Results (Current Run):**  
-  - Train Accuracy: ~[Insert value]  
-  - Test Accuracy: ~[Insert value]  
+## Project Objectives
+- Build reproducible and leakage-free machine learning pipelines
+- Apply structured feature engineering to improve predictive performance
+- Compare baseline and advanced models
+- Perform thorough model evaluation beyond accuracy
+- Interpret model behavior using modern explainability techniques
 
 ---
 
-### 2. XGBoost Pipeline with Grid Search and Feature Importance
-- **Upgraded from logistic regression:** Using **XGBoost** for better predictive power  
-- **Hyperparameter Tuning:** GridSearchCV within a pipeline for `n_estimators`, `max_depth`, `learning_rate`, and `subsample`  
-- **Feature Importance Analysis:**  
-  - Extracted post-preprocessing importances  
-  - Top contributors: `Sex`, `Title`, `FarePerPerson`  
-  - Visualization included in the repository  
+## Dataset
+- Source: Kaggle Titanic Dataset
+- Target Variable: `Survived` (0 = No, 1 = Yes)
+- Features include passenger demographics, ticket class, fare, and family information
 
-- **Notes:**  
-  - Ensures **no data leakage**  
-  - Correctly handles categorical features and pipeline transformations  
 ---
 
-## Recent Progress: Model Evaluation & Explainability (Ongoing)
+## Feature Engineering
+Custom features were created to improve signal quality:
+- **Title** extracted from passenger names (with rare-title grouping)
+- **FamilySize** = SibSp + Parch + 1
+- **IsAlone** indicator
+- **FarePerPerson** = Fare / FamilySize
 
-In the current stage of the project, the focus has shifted from model construction to **understanding model behavior, evaluation, and interpretability**.
+All feature engineering is implemented inside a Scikit-learn pipeline to prevent data leakage.
 
-### Cross-Validation (CV)
-- Used cross-validation to obtain a more robust estimate of model performance.
-- Learned how CV reduces dependency on a single data split and helps identify overfitting.
-- Evaluation primarily guided by ROC-AUC to balance class performance.
+---
 
-### Confusion Matrix Analysis
-- Analyzed the confusion matrix to understand **where the model is making incorrect predictions**.
-- Identified false positives vs. false negatives to study trade-offs between predicting survival and non-survival.
-- Helped contextualize precision and recall beyond aggregate accuracy.
+## Preprocessing
+Implemented using `ColumnTransformer`:
+- Numerical features:
+  - Median imputation
+  - Standard scaling
+- Categorical features:
+  - Most-frequent imputation
+  - One-hot encoding
+- Fully integrated into pipelines for reproducibility
 
-### Classification Metrics
-- Interpreted precision, recall, and F1-score for each class individually.
-- Observed differences in model behavior when predicting survivors versus non-survivors.
-- Reinforced the importance of class-wise evaluation in imbalanced datasets.
+---
 
-### Model Explainability with SHAP
-Implemented SHAP to explain both **global model behavior** and **individual predictions**.
+## Models Implemented
 
-**SHAP Summary Plot (Global Explanation):**
-- Visualized feature impact across the entire dataset.
-- Identified key drivers such as Age, FarePerPerson, FamilySize, and passenger class–related features.
-- Understood how feature values influence prediction direction and magnitude.
+### 1. Logistic Regression (Baseline)
+- Used as a benchmark model
+- Max iterations set to 1000
+- Helps establish baseline performance and interpretability
 
-**SHAP Waterfall Plot (Individual Explanation):**
-- Analyzed a single passenger’s prediction in detail.
-- Tracked how each feature contributed to pushing the model output toward survival or non-survival.
-- Improved interpretability and trust in model decisions.
+### 2. XGBoost Classifier (Final Model)
+- Implemented within a pipeline
+- Hyperparameter tuning using **GridSearchCV**
+- Optimized using **5-fold cross-validation**
+- Primary metric: **ROC-AUC**
 
-### Notes
-- This project remains **iterative and exploratory**.
-- Future steps include further feature refinement, validation on unseen data, and comparison with additional models.
+Tuned hyperparameters include:
+- `n_estimators`
+- `max_depth`
+- `learning_rate`
+- `subsample`
+- `colsample_bytree`
 
+---
 
+## Model Evaluation
+Evaluation goes beyond accuracy to fully understand model behavior:
+
+- **Cross-Validation ROC-AUC** for robust performance estimation
+- **Confusion Matrix** to analyze false positives and false negatives
+- **Classification Report** (precision, recall, F1-score per class)
+- **Precision–Recall Curve** for class-level trade-off analysis
+- **Learning Curves** to diagnose bias vs. variance and data sufficiency
+
+---
+
+## Model Explainability (SHAP)
+SHAP was used to interpret the final XGBoost model:
+
+### Global Explainability
+- SHAP summary plots show overall feature importance
+- Key drivers include:
+  - Age
+  - FarePerPerson
+  - FamilySize
+  - Passenger class–related features
+
+### Local Explainability
+- SHAP waterfall plots explain individual passenger predictions
+- Demonstrates how each feature pushes predictions toward survival or non-survival
+
+These analyses improve trust and transparency in model decisions.
+
+---
+
+## Key Learnings
+- Feature engineering can significantly improve model performance
+- Pipelines are essential for preventing data leakage
+- Evaluation metrics must align with the problem, not just accuracy
+- Model interpretability is critical for real-world ML applications
+
+---
+
+## Technologies Used
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- XGBoost
+- Matplotlib, Seaborn
+- SHAP
+
+---
+
+## Project Status
+**Completed**
+
+Future improvements may include:
+- Testing additional ensemble models
+- Feature refinement
+- Validation on external or unseen datasets
+
+---
+
+## Author
+Aspiring Data Scientist actively seeking **Data Science / Machine Learning internship opportunities**.  
+Feedback, suggestions, and collaboration are welcome.
